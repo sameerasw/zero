@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    /* Add this to visualize the main window area during debugging */
+    /* background-color: rgba(255, 0, 0, 0.1); */
+}
+
+#urlbar {
+    position: absolute; /* Keep fixed */
+    top: 10px;       /* Position it near the top of the main window */
+                     /* The urlBarHeight in main.js controls the space */
+                     /* This CSS 'top' just positions it *within* that space */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 600px;
+    padding: 10px 15px;
+    font-size: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(50, 50, 50, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    outline: none;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    z-index: 1000;
+    /* Use visibility/opacity for smoother transitions if preferred */
+    /* transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out; */
+}
+
+#urlbar.hidden {
+     display: none; /* Using display is simplest for now */
+    /* Or: */
+    /* visibility: hidden; */
+    /* opacity: 0; */
+}
+
+#urlbar::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}

@@ -1,0 +1,23 @@
+{
+  "name": "zero",
+  "version": "1.0.0",
+  "description": "A browser?",
+  "main": "main.js",
+  "scripts": {
+  "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sameerasw/zero.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sameerasw/zero/issues"
+  },
+  "homepage": "https://github.com/sameerasw/zero#readme",
+  "devDependencies": {
+    "electron": "^35.2.0"
+  }
+}
