@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
     <title>Browser Shell</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <input id="urlbar" type="text" placeholder="Enter URL or search..." class="hidden">
+    <div id="browser-container">
+        <!-- This div will be populated by the BrowserView -->
+    </div>
+
+    <div id="ui-layer">
+        <div id="overlay"></div>
+        <div id="urlbar-container">
+            <input id="urlbar" type="text" placeholder="Enter URL or search..." class="hidden">
+        </div>
+    </div>
+
     <script src="renderer.js"></script>
 </body>
+
 </html>
