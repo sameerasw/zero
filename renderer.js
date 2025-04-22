@@ -5,32 +5,38 @@ const urlbarContainer = document.getElementById("urlbar-container");
 const overlay = document.getElementById("overlay");
 const browserContainer = document.getElementById("browser-container");
 
+browserContainer.classList.add("browser-container-with-urlbar");
+
 if (!window.electronAPI) {
   console.error("[Renderer] CRITICAL: electronAPI is not defined.");
   alert("Error: Browser components failed to load.");
 } else {
   console.log("[Renderer] electronAPI found.");
 
-  // --- Listeners for events from Main Process ---
-
   window.electronAPI.onShowUrlBar((currentURL) => {
     console.log("[Renderer] Received show-url-bar, Current URL:", currentURL);
-    urlbar.classList.add("visible");
+
     urlbarContainer.classList.add("visible");
-    urlbar.value = currentURL || "";
-    urlbar.select();
-    urlbar.focus();
+
+    setTimeout(() => {
+      urlbar.classList.add("visible");
+      urlbar.value = currentURL || "";
+      urlbar.select();
+      urlbar.focus();
+    }, 50);
   });
 
   window.electronAPI.onHideUrlBar(() => {
     console.log("[Renderer] Received hide-url-bar");
-    urlbar.value = "";
-    urlbar.classList.remove("visible");
-    urlbarContainer.classList.remove("visible");
-    urlbar.blur(); // Just remove focus from bar
-  });
 
-  // --- Event listeners for the URL Bar Input ---
+    urlbar.classList.remove("visible");
+
+    setTimeout(() => {
+      urlbarContainer.classList.remove("visible");
+      urlbar.value = "";
+      urlbar.blur();
+    }, 100);
+  });
 
   urlbar.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -49,9 +55,6 @@ if (!window.electronAPI) {
       window.electronAPI.sendUrlBarEscape();
     }
   });
-
-  // No need for overlay click handler for hiding URL bar anymore
-  // But we'll keep the code structure for now
 
   console.log("[Renderer] Event listeners attached.");
 }
