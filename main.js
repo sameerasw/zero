@@ -52,6 +52,19 @@ function updateWebViewBounds() {
   );
 }
 
+// Function to toggle BrowserView visibility
+function toggleBrowserViewVisibility(visible) {
+  if (!mainWindow || !webView || webView.webContents.isDestroyed()) return;
+
+  if (visible) {
+    mainWindow.addBrowserView(webView);
+    console.log("[Main] BrowserView added to window");
+  } else {
+    mainWindow.removeBrowserView(webView);
+    console.log("[Main] BrowserView removed from window");
+  }
+}
+
 // --- Create the main application window ---
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -132,6 +145,9 @@ function createWindow() {
         `[Main] Ctrl+L pressed. Toggling URL bar visibility to: ${isUrlBarVisible}`
       );
 
+      // Toggle BrowserView visibility based on URL bar state
+      toggleBrowserViewVisibility(!isUrlBarVisible);
+
       const currentURL = isUrlBarVisible ? webView.webContents.getURL() : "";
       // Send corresponding command
       if (isUrlBarVisible) {
@@ -154,6 +170,7 @@ function createWindow() {
         .then(() => {
           console.log(`[Main] IPC: Successfully loaded: ${finalUrl}`);
           isUrlBarVisible = false; // Hide bar on success
+          toggleBrowserViewVisibility(true); // Show BrowserView again
           mainWindow.webContents.send("hide-url-bar"); // Tell renderer
           webView.webContents.focus(); // Focus content
         })
@@ -171,6 +188,7 @@ function createWindow() {
     if (mainWindow && isUrlBarVisible) {
       console.log("[Main] IPC: url-bar-escape received.");
       isUrlBarVisible = false;
+      toggleBrowserViewVisibility(true); // Show BrowserView again
       mainWindow.webContents.send("hide-url-bar"); // Tell renderer
       webView?.webContents.focus(); // Focus content
     }
