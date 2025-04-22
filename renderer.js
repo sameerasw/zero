@@ -1,6 +1,7 @@
 console.log("[Renderer] Script loaded");
 
 const urlbar = document.getElementById("urlbar");
+const urlbarContainer = document.getElementById("urlbar-container");
 const overlay = document.getElementById("overlay");
 const browserContainer = document.getElementById("browser-container");
 
@@ -14,8 +15,8 @@ if (!window.electronAPI) {
 
   window.electronAPI.onShowUrlBar((currentURL) => {
     console.log("[Renderer] Received show-url-bar, Current URL:", currentURL);
-    urlbar.classList.remove("hidden");
-    overlay.classList.add("visible");
+    urlbar.classList.add("visible");
+    urlbarContainer.classList.add("visible");
     urlbar.value = currentURL || "";
     urlbar.select();
     urlbar.focus();
@@ -24,8 +25,8 @@ if (!window.electronAPI) {
   window.electronAPI.onHideUrlBar(() => {
     console.log("[Renderer] Received hide-url-bar");
     urlbar.value = "";
-    urlbar.classList.add("hidden");
-    overlay.classList.remove("visible");
+    urlbar.classList.remove("visible");
+    urlbarContainer.classList.remove("visible");
     urlbar.blur(); // Just remove focus from bar
   });
 
@@ -49,11 +50,8 @@ if (!window.electronAPI) {
     }
   });
 
-  // Click on overlay should hide the URL bar
-  overlay.addEventListener("click", (e) => {
-    console.log("[Renderer] Overlay clicked. Hiding URL bar.");
-    window.electronAPI.sendUrlBarEscape();
-  });
+  // No need for overlay click handler for hiding URL bar anymore
+  // But we'll keep the code structure for now
 
   console.log("[Renderer] Event listeners attached.");
 }

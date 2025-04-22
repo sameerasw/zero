@@ -11,7 +11,7 @@ const path = require("path");
 let mainWindow = null;
 let webView = null;
 let isUrlBarVisible = false; // Track URL bar state
-const urlBarHeight = 60; // Define the height needed for the URL bar area (adjust as needed)
+const urlBarHeight = 40; // Height of the URL bar area
 
 // --- Utility to process URL input (keep the previous version) ---
 function processUrlInput(input) {
@@ -39,30 +39,30 @@ function updateWebViewBounds() {
 
   const bounds = mainWindow.getContentBounds();
 
-  // Always set webView to full size regardless of URL bar visibility
-  webView.setBounds({
-    x: 0,
-    y: 0,
-    width: bounds.width,
-    height: bounds.height,
-  });
+  // Adjust webView position based on URL bar visibility
+  if (isUrlBarVisible) {
+    // When URL bar is visible, position webView below it
+    webView.setBounds({
+      x: 0,
+      y: urlBarHeight,
+      width: bounds.width,
+      height: bounds.height - urlBarHeight,
+    });
+  } else {
+    // When URL bar is hidden, webView takes full window size
+    webView.setBounds({
+      x: 0,
+      y: 0,
+      width: bounds.width,
+      height: bounds.height,
+    });
+  }
 
   console.log(
-    `[Main] Updated webView bounds: Full window size, BarVisible=${isUrlBarVisible}`
+    `[Main] Updated webView bounds: ${
+      isUrlBarVisible ? "Below URL bar" : "Full window"
+    }, BarVisible=${isUrlBarVisible}`
   );
-}
-
-// Function to toggle BrowserView visibility
-function toggleBrowserViewVisibility(visible) {
-  if (!mainWindow || !webView || webView.webContents.isDestroyed()) return;
-
-  if (visible) {
-    mainWindow.addBrowserView(webView);
-    console.log("[Main] BrowserView added to window");
-  } else {
-    mainWindow.removeBrowserView(webView);
-    console.log("[Main] BrowserView removed from window");
-  }
 }
 
 // --- Create the main application window ---
@@ -73,7 +73,7 @@ function createWindow() {
     frame: false,
     transparent: true,
     vibrancy: "under-window",
-    titleBarStyle: "hidden",
+    titleBarStyle: "hiddenInset", // Changed to hiddenInset for better macOS integration
     visualEffectState: "active",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -145,14 +145,13 @@ function createWindow() {
         `[Main] Ctrl+L pressed. Toggling URL bar visibility to: ${isUrlBarVisible}`
       );
 
-      // Toggle BrowserView visibility based on URL bar state
-      toggleBrowserViewVisibility(!isUrlBarVisible);
+      // Update webView bounds based on URL bar visibility
+      updateWebViewBounds();
 
       const currentURL = isUrlBarVisible ? webView.webContents.getURL() : "";
       // Send corresponding command
       if (isUrlBarVisible) {
         mainWindow.webContents.send("show-url-bar", currentURL);
-        // No need to adjust bounds anymore
       } else {
         mainWindow.webContents.send("hide-url-bar");
         webView.webContents.focus(); // Focus content when hiding bar
@@ -170,7 +169,7 @@ function createWindow() {
         .then(() => {
           console.log(`[Main] IPC: Successfully loaded: ${finalUrl}`);
           isUrlBarVisible = false; // Hide bar on success
-          toggleBrowserViewVisibility(true); // Show BrowserView again
+          updateWebViewBounds(); // Update bounds
           mainWindow.webContents.send("hide-url-bar"); // Tell renderer
           webView.webContents.focus(); // Focus content
         })
@@ -188,7 +187,7 @@ function createWindow() {
     if (mainWindow && isUrlBarVisible) {
       console.log("[Main] IPC: url-bar-escape received.");
       isUrlBarVisible = false;
-      toggleBrowserViewVisibility(true); // Show BrowserView again
+      updateWebViewBounds(); // Update bounds
       mainWindow.webContents.send("hide-url-bar"); // Tell renderer
       webView?.webContents.focus(); // Focus content
     }
