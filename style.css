@@ -5,7 +5,6 @@ body {
   background: transparent;
 }
 
-/* Main container for the browser content */
 #browser-container {
   position: absolute;
   top: 0;
@@ -15,7 +14,6 @@ body {
   z-index: 1;
 }
 
-/* UI Layer sits on top of browser content */
 #ui-layer {
   position: absolute;
   top: 0;
@@ -26,7 +24,6 @@ body {
   z-index: 2;
 }
 
-/* Container for URL bar to position it at the top */
 #urlbar-container {
   position: absolute;
   top: 0;
@@ -39,7 +36,7 @@ body {
   pointer-events: none;
   z-index: 3;
   -webkit-app-region: drag;
-  background-color: rgba(30, 30, 30, 0);
+  background-color: transparent;
   backdrop-filter: blur(0);
   -webkit-backdrop-filter: blur(0);
   transform: translateY(-40px);
@@ -50,13 +47,12 @@ body {
 
 #urlbar-container.visible {
   pointer-events: auto;
-  background-color: rgba(30, 30, 30, 0.8);
+  background-color: transparent;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transform: translateY(0);
 }
 
-/* Overlay not needed anymore, but keeping minimal styling in case we use it differently */
 #overlay {
   position: absolute;
   top: 0;
@@ -99,7 +95,6 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Add a class for the browser view transition - this will be applied from JS */
 .browser-container-with-urlbar {
   transition: transform 0.35s cubic-bezier(0.17, 0.89, 0.32, 1.49);
 }
